@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS command injection example</title>
+</head>
+<body>
+    <h1>Creating your personal cloud on the server</h1>
+    <br>
+    <br>
+    OS Command injection - type of vulnerabilities when attacker can manipulate request-parameters<br>
+    and inject code  that will be executed by the operating system <br><br>
+    This is the functionality for creating your personal cloud folder on the server.<br>
+    Please keep in your mind that this is a simple example for demonstration purposes (imagine that the user is authorized).<br>
+    On this page user can create his own cloud folder just by sending his name to the form  <br>
+    <br><br>
+
+    <button onclick="document.getElementById('source_code_unsecure').style.display = 'block'">Show vulnerable source code</button>
+    <div id="source_code_unsecure" style="display: none;">
+        <br>
+        # In the strings bellow you can see the most unsecure operations with os command implementation<br>
+        # 1) command = f"mkdir cloud\\{cloud_login}" without any sanitizing of input parameter<br>
+        # 2) using shell=True executes the command through a shell, this the main risk of command injection<br><br>
+        &emsp;if os_name == 'nt':<br>
+        &emsp;&emsp;command = f"mkdir cloud\\{cloud_login}"<br><br>
+        &emsp;elif os_name == 'posix':<br>
+        &emsp;&emsp;command = f"mkdir cloud/{cloud_login}"<br><br>
+        &emsp;else:<br>
+        &emsp;&emsp;raise ValueError("unknown server OS")<br><br>
+
+        &emsp;result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)<br><br>
+        &emsp;if result.returncode == 0:<br>
+        &emsp;&emsp;# "result.stdout" for demonstrating result of exploitation<br>
+        &emsp;&emsp;msg = f"cloud folder created | {result.stdout}"<br>
+        &emsp;else:<br>
+        &emsp;&emsp;msg = result.stdout<br>
+    </div>
+    <br><br><br>
+
+    <button onclick="document.getElementById('payloads').style.display = 'block'">Show payload examples os command injections</button>
+    <div id="payloads" style="display: none;"><br>
+        # You can send next examples into cloud login : <br><br>
+        &emsp;# 1) alice & whoami<br>
+        &emsp;# 2) alice & rmdir cloud\\alyan (for Windows-based server)<br><br>
+        &emsp;# you can not implement your own command injections, Good Luck!
+
+    </div>
+    <br><br><br>
+
+    You can choose methods unsecure/secure<br>
+    Unsecure - creating folder cloud with actual OS command injection vulnerability<br>
+    Secure - Secure method
+    <br><br>
+
+    <form action="/command" method="post">
+        <label for="cloud_login">Cloud Login:</label>
+        <input type="text" id="cloud_login" name="cloud_login" required size="50">
+        <select id="command_method" name="command_method">
+            <option value="unsecure">Unsecure</option>
+            <option value="secure">Secure</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Create my own cloud folder!" style="width: 300px; height: 40px;">
+    </form>
+
+    {% if msg %}
+        <p>{{ msg|safe }}</p>
+    {% endif %}
+
+   <br><br><br>
+
+    <button onclick="document.getElementById('secure_realization').style.display = 'block'">Show secure realization</button>
+    <div id="secure_realization" style="display: none;">
+        <br>
+        # Bellow is secure code<br><br>
+            # 1) check cloud_login for patterns.<br>
+            # This is a very effective method of checking input data against expected patterns<br><br>
+            if not re.match(r'^[a-zA-Z0-9_]+$', cloud_login):<br>
+            &emsp;raise ValueError("invalid login format")<br><br>
+
+            if os_name == 'nt':<br>
+            &emsp;cloud_path = f"cloud\\{cloud_login}"<br><br>
+                # shell=False. The command is executed without using the command line shell in the operating system<br>
+                # ['cmd', '/c', 'mkdir', cloud_path] - example of parametrization:<br>
+                # when the payload is passed as a parameter, not as part of the request<br><br>
+            &emsp;result = subprocess.run(['cmd', '/c', 'mkdir', cloud_path], shell=False)<br><br>
+            elif os_name == 'posix':<br>
+            &emsp;cloud_path = f"cloud/{cloud_login}"<br>
+            &emsp;result = subprocess.run(['mkdir', cloud_path], shell=False)<br>
+            else:<br>
+            &emsp;raise ValueError("unknown server OS")<br><br>
+
+            # send only intended messages to the user<br><br>
+            if result.returncode == 0:<br>
+            &emsp;msg = "cloud folder created"<br>
+            else:<br>
+            &emsp;msg = "something was wrong"
+
+
+    </div>
+    <br><br><br>
+
+</body>
+</html>

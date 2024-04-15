@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+
+<h1>Registration</h1>
+
+<br><br>
+
+Second Order SQL Injection, also known as Stored SQL Injection, is a type of SQL injection attack <br>
+where the malicious payload is stored in the database and executed at a later time. <br>
+Unlike traditional SQL injection attacks where the payload is executed immediately, <br>
+in Second Order SQL Injection, the injected code is stored persistently in the database,<br>
+typically in places like comments, user profiles, or other stored data.<br><br>
+
+The attack unfolds in multiple stages:<br><br>
+
+&emsp; 1)The attacker injects malicious SQL code into the application, often storing it in the database.<br>
+&emsp; 2)The injected code remains dormant until it is later executed by the application, typically when the manipulated data is retrieved and processed.<br>
+&emsp;3) Upon execution, the malicious SQL code can perform unauthorized actions, such as accessing sensitive data, modifying database records, or even executing system commands.<br><br>
+Preventing Second Order SQL Injection requires a thorough understanding of secure coding practices and implementing measures like input validation, sanitization, <br>
+and using parameterized queries to ensure that user-supplied data is properly handled and executed safely without exposing the application to vulnerabilities.<br><br>
+
+In this form you may register new user and inject SQL-code into city value<br>
+And then using page for searching users from the same city injected value well be insecurely concatenated with SQL query for searching users
+<br><br>
+
+<button onclick="document.getElementById('payloads').style.display = 'block'">Show payload examples</button>
+    <div id="payloads" style="display: none;">
+        <br>
+        You can try to send these payloads and see the result: <br><br>
+        &emsp;1) paste into search parameter: ' UNION SELECT password FROM users WHERE login='admin'--<br>
+        &emsp;2) paste into city value: ' UNION SELECT password FROM users WHERE login like '%a%'--<br>
+        &emsp; Also you may try sending your own payloads. Good luck!
+    </div>
+    <br><br>
+
+<form method="post">
+    <label for="login">Login:</label>
+    <input type="text" id="login" name="login" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" required><br><br>
+
+    <label for="credit_card">Credit Card:</label>
+    <input type="text" id="credit_card" name="credit_card" required><br><br>
+
+    <input type="submit" value="Register">
+</form>
+<br><br>
+Below is request processing without injection but also without data sanitizing:<br><br>
+cursor.execute("INSERT INTO users (login, password, role, city, credit_card) VALUES (?, ?, ?, ?, ?); ", (login, hashed_password, role, city, credit_card))
+
+<br><br>
+This is the link for users searching page:<br><br>
+<a href="/sqli/user/city">Search user from the same city</a>
+
+
+{% if result %}
+    <p>{{ result }}</p>
+{% endif %}
+
+</body>
+</html>

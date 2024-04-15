@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vulnerable web application</title>
+    <style>
+        footer {
+            position: fixed; bottom: 0; width: 100%; background-color: #f1f1f1;
+            text-align: center; padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Vulnerable web application.</h1>
+
+    <h2>Here is the list of some popular vulnerabilities:</h2>
+
+    <h3>OWASP Top 10 A3:2021-Injection</h3>
+    <ul>
+        <li><a href="/sqli/login">SQL injection (in login function)</a></li>
+        <li><a href="/sqli/search">SQL injection (in user-search function)</a></li>
+        <li><a href="/sqli/registration">Second order SQL injection</a></li>
+        <li><a href="/command">OS Command injection</a></li>
+    </ul>
+
+
+    <footer>
+        <p>Author: Alyan Saniev</p>
+    </footer>
+</body>
+</html>

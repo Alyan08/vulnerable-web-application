@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h1>SQL injection in login function + Safe method</h1>
+
+    You can use accounts:<br>
+    login - alice<br>
+    password - alice123<br>
+    <br>
+    login - bob<br>
+    password - bob123<br>
+    <br>
+    <br>
+    You must choose variant of login function (SQL Method):<br>
+    &emsp; 1) Unsecure - authentication with Possible SQL-injection<br>
+    &emsp; 2) Secure - Not working SQL injections. Defended function
+    <br>
+    <br>
+
+    <form action="/sqli/login" method="post">
+        <label for="login">Login:</label>
+        <input type="text" id="login" name="login" required  size="50">
+        <br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required  size="50">
+        <br><br>
+
+        <label for="sql_method">SQL Method:</label>
+        <select id="sql_method" name="sql_method">
+            <option value="unsecure">Unsecure</option>
+            <option value="secure">Secure</option>
+        </select>
+        <br><br>
+
+        <input type="submit" value="Login" style="width: 100px; height: 40px;">
+    </form>
+
+    {% if msg %}
+        <p>{{ msg }}</p>
+    {% endif %}
+    <br>
+    <br>
+    <button onclick="document.getElementById('source_code').style.display = 'block'">Show vulnerable source code</button>
+    <div id="source_code" style="display: none;">
+        <br>
+        This is python code for authentication request: <br><br>
+        # in the strings below we check received login and password using unsecure method<br>
+        # because we inject user input directly<br>
+        # allowing an attacker to affect our application logic, breaking the SQL query<br><br>
+        sql = f"SELECT login, role  FROM users WHERE login = '{login}' AND password = '{hashed_password}'"<br>
+        cursor.execute(sql)<br>
+        user_data = cursor.fetchone()<br><br>
+
+        if user_data:<br>
+        &emsp;return render_template('login.html', msg=f"Success login for {user_data[0]}")<br>
+        else:<br>
+        &emsp;return render_template('login.html', msg="Wrong credentials")<br>
+    </div>
+    <br><br>
+    <button onclick="document.getElementById('payloads').style.display = 'block'">Show payload examples for hacking authentication</button>
+    <div id="payloads" style="display: none;">
+        <br>
+        You can try to send these payloads and see the result: <br><br>
+        &emsp;1) paste into login value (with any password, f.e. 123): alice'--<br>
+        &emsp;1) paste into login value (with any password, f.e. 123): alice' OR 1==1 --<br>
+        &emsp;1) paste into login value (with any password, f.e. 123): ' UNION SELECT sqlite_version(), null--<br>
+        &emsp; Also you may try sending your own payloads. Good luck!
+    </div>
+    <br><br>
+
+    <button onclick="document.getElementById('source_code_secure').style.display = 'block'">Show secure source code</button>
+    <div id="source_code_secure" style="display: none;">
+        <br>
+        This is secure python code for authentication request: <br><br>
+        # in the string below you can see parametrized query<br>
+        # it helps to prevent SQL injection by separating the SQL code from the data being used in the query<br>
+        # placeholders "?" are used in the SQL string to indicate where the parameters should be inserted<br>
+        sql = "SELECT login, role FROM users WHERE login = ? AND password = ?"<br>
+        data = (login, hashed_password)<br>
+        cursor.execute(sql, data)<br>
+        user_data = cursor.fetchone()<br><br>
+
+        if user_data:<br>
+        &emsp;return render_template('login.html', msg=f"Success login for {user_data[0]}")<br>
+        else:<br>
+        &emsp;return render_template('login.html', msg="Wrong credentials")<br>
+    </div>
+    <br><br>
+
+
+</body>
+</html>

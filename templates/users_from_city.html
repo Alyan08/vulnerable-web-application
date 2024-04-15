@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Check User City</title>
+</head>
+<body>
+
+<h1>Check User City</h1>
+<br><br>
+Insert login of user for searching other users from the same city<br><br>
+<form method="post">
+    <label for="login">Enter Login of user for searching other users from the same city:</label>
+    <input type="text" id="login" name="login" required><br><br>
+
+    <input type="submit" value="Check City">
+</form>
+
+{% if result %}
+    <p>{{ result }}</p>
+{% endif %}
+
+<br><br><br>
+
+# in the string below you see parametrized query in first SQL query for receiving user's cite from DB<br>
+# it helps to prevent SQL injection by separating the SQL code from the data being used in the query<br>
+# placeholders "?" are used in the SQL string to indicate where the parameters should be inserted<br>
+# you can not implement SQLi with login parameter, but there is a surprise bellow<br><br>
+sql = "SELECT city FROM users WHERE login = ?"<br>
+cursor.execute(sql, (login,))<br>
+login_city = cursor.fetchone()<br><br><br>
+
+# in the strings bellow we can see unsecure injecting login_city[0] value into sql query<br>
+# this is the simple example of second-order SQL-injection with stored SQL-injection<br><br>
+sql = f"SELECT login FROM users WHERE city = '{login_city[0]}'"<br>
+cursor.execute(sql)<br>
+logins = cursor.fetchall()<br>
+search_result = ', '.join(item[0] for item in logins)<br><br>
+
+
+</body>
+</html>

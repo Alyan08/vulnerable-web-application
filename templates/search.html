@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <h1>SQL injection in user-search function</h1>
+    I think have 4 users on this site (admin, alice, bob, john). But you can check users by our user-search function
+    <br><br>
+    You must choose variant of login function (SQL Method):<br>
+    &emsp; 1) Unsecure - authentication with Possible SQL-injection<br>
+    &emsp; 2) Secure - Not working SQL injections. Defended function
+    <br><br><br>
+    <form action="/sqli/search" method="post">
+        <label for="search_text">Search:</label>
+        <input type="text" id="search_text" name="search_text" required  size="50">
+        <br><br>
+
+        <label for="sql_method">SQL Method:</label>
+        <select id="sql_method" name="sql_method">
+            <option value="unsecure">Unsecure</option>
+            <option value="secure">Secure</option>
+        </select>
+        <br><br>
+
+        <input type="submit" value="search user" style="width: 100px; height: 40px;">
+    </form>
+    <br>
+    {% if result %}
+        <p>{{ result }}</p>
+    {% endif %}
+    <br>
+    Resulting SQL-query in our application:
+    <br>
+    {% if resulting_query %}
+        <p>{{ resulting_query }}</p>
+    {% endif %}
+
+    <br>
+    <button onclick="document.getElementById('source_code').style.display = 'block'">Show vulnerable source code</button>
+    <div id="source_code" style="display: none;">
+        <br>
+        This is python code for authentication request: <br><br>
+        # in the strings below we check received login with search parameter using unsecure method<br>
+        # because we inject user input directly<br>
+        # allowing an attacker to affect our application logic, breaking the SQL query<br><br>
+        sql = f"SELECT login FROM users WHERE login LIKE '%{search_text}%'"<br>
+        cursor.execute(sql)<br>
+        data = cursor.fetchall()<br>
+
+    </div>
+    <br><br>
+    <button onclick="document.getElementById('payloads').style.display = 'block'">Show payload examples for hacking authentication</button>
+    <div id="payloads" style="display: none;">
+        <br>
+        You can try to send these payloads and see the result: <br><br>
+        &emsp;1) paste into search parameter: ' UNION SELECT password FROM users WHERE login='admin'--<br>
+        &emsp;1) paste into search parameter: ' UNION SELECT password FROM users WHERE login like '%a%'--<br>
+        &emsp;1) paste into search parameter for retrieving all users: '--<br>
+        &emsp; Also you may try sending your own payloads. Good luck!
+    </div>
+    <br><br>
+
+    <button onclick="document.getElementById('source_code_secure').style.display = 'block'">Show secure source code</button>
+    <div id="source_code_secure" style="display: none;">
+        <br>
+        This is secure python code for authentication request: <br><br>
+        # in the string below you can see parametrized query<br>
+        # it helps to prevent SQL injection by separating the SQL code from the data being used in the query<br>
+        # placeholders "?" are used in the SQL string to indicate where the parameters should be inserted<br><br>
+        sql = "SELECT login FROM users WHERE login LIKE ?"<br>
+        cursor.execute(sql, ('%' + search_text + '%',))<br>
+        data = cursor.fetchall()<br>
+    </div>
+    <br><br>
+
+</body>
+</html>
