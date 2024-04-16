@@ -59,7 +59,7 @@ def make_template(poem):
                     </form>
                     <br><br>
 
-                    <iframe srcdoc="{poem}" width="600" height="250"></iframe>
+                    {poem}
                     <br><br>
 
                     2) On the next step send first payload (url-encoded) %7B%7B 5 + 5 %7D%7D <br><br>

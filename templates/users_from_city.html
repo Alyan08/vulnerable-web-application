@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Check User City</title>
+
+    <style>
+        footer {
+            position: fixed; bottom: 0; width: 100%; background-color: #f1f1f1;
+            text-align: center; padding: 10px;
+        }
+    </style>
+
 </head>
 <body>
 
 <h1>Check User City</h1>
-<br><br>
+<a href="/" style="font-size: 18px;">Main page</a><br><br>
 Insert login of user for searching other users from the same city<br><br>
 <form method="post">
     <label for="login">Enter Login of user for searching other users from the same city:</label>
@@ -38,5 +46,8 @@ logins = cursor.fetchall()<br>
 search_result = ', '.join(item[0] for item in logins)<br><br>
 
 
+    <footer>
+        <p>Author: Alyan Saniev</p>
+    </footer>
 </body>
 </html>
