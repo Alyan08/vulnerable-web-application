@@ -1,0 +1,8 @@
+
+database_config:
+  host: 'localhost'
+  port: 5432
+  scheme: 'private'
+  username: 'alyan'
+  password: 'alyan'
+  db_name: 'alyan'
