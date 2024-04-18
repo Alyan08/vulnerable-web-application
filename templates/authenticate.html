@@ -1,10 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Authentication</title>
 </head>
 <body>
-$END$
+<a href="/" style="font-size: 18px;">Main page</a><br><br>
+
+<h2>Authentication</h2>
+<a href="/" style="font-size: 18px;">Main page</a><br><br>
+
+{% if msg %}
+    <p>{{ msg }}</p>
+{% endif %}
+
+<form method="post" action="/auth">
+    <label for="login">Login:</label><br>
+    <input type="text" id="login" name="login"><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password"><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
 </body>
 </html>

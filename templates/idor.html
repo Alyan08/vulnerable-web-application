@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>IDOR Page</title>
 </head>
 <body>
-$END$
+
+    <h1>About IDOR</h1>
+    <a href="/" style="font-size: 18px;">Main page</a><br><br>
+
+    {% if text %}
+        <p>{{ text|safe }}</p>
+    {% endif %}
+
+    <h2>IDOR Page</h2>
+
+    {% if msg %}
+        <p>{{ msg|safe }}</p>
+    {% endif %}
+
+    {% if link %}
+        <p><a href="{{ link }}">{{ link_name }}</a></p>
+    {% endif %}
+
 </body>
 </html>
